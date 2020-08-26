@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Book;
 use Illuminate\Http\Request;
-
+use Validator;
 class BookController extends Controller
 {
     /**
@@ -35,7 +35,26 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
-        //
+         //
+         $validator = Validator::make($request->all(), [
+            'name' => 'required|min:3|max:50|',
+            'level' => 'required|min:1|max:50|',
+            'language'=>'required|min:3|max:50|'
+
+        ]);
+
+
+        if ($validator->passes()) {
+            $book = new Book;
+            $book->name = $request->name;
+            $book->level = $request->level;
+            $book->language = $request->language;
+            $book->save();
+			return response()->json(["error"=>"false","status"=>"ok","data"=>$book]);
+        }
+
+
+    	return response()->json(['errors'=>$validator->errors(),'success'=>'false']);
     }
 
     /**
@@ -44,9 +63,17 @@ class BookController extends Controller
      * @param  \App\Book  $book
      * @return \Illuminate\Http\Response
      */
-    public function show(Book $book)
+    public function show($id)
     {
-        //
+        try
+        {
+            $book = Book::findOrFail($id);
+        }
+        catch(ModelNotFoundException $e)
+        {
+            return response()->json(['status' => 'failed', 'data' => null, 'message' => "Book with id $id is not found "]);
+        }
+        return response()->json(["data"=>$book,"status"=>"ok"], 200);
     }
 
     /**
@@ -67,9 +94,36 @@ class BookController extends Controller
      * @param  \App\Book  $book
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Book $book)
+    public function update(Request $request,$id)
     {
-        //
+        try
+        {
+            $book = Book::findOrFail($id);
+        }
+        catch(ModelNotFoundException $e)
+        {
+            return response()->json(['status' => 'failed', 'data' => null, 'message' => "Book with id $id is not found "]);
+        }
+
+
+        $validator = Validator::make($request->all(), [
+          'name' => 'required|min:3|max:50|',
+          'level' => 'required|min:1|max:50|',
+          'language'=>'required|min:3|max:50|'
+        ]);
+
+        if ($validator->passes()) {
+            foreach($request->all() AS $index => $field){
+                $book->$index = $field;
+            }
+            $is_save = $book->save();
+            if($is_save){
+                return response()->json(['status'=>'ok','data'=>Book::findOrFail($id),'success'=>'true','message'=>"Book with id $id has been updated"]);
+            }
+        }
+
+
+        return response()->json(['errors'=>$validator->errors(),'success'=>'false',"status"=>"failed"]);
     }
 
     /**
