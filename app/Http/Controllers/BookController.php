@@ -132,8 +132,19 @@ class BookController extends Controller
      * @param  \App\Book  $book
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Book $book)
+    public function destroy($id)
     {
-        //
+        try
+         {
+             $book = Book::findOrFail($id);
+         }
+         catch(ModelNotFoundException $e)
+         {
+             return response()->json(['status' => 'failed', 'data' => null, 'message' => "Book with id $id is not found "]);
+         }
+         $isDelete = $book->delete();
+         if($isDelete){
+            return response()->json(['status'=>'ok','message'=>$isDelete], 200);
+         }
     }
 }
