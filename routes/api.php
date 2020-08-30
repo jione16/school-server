@@ -22,3 +22,9 @@ Route::resource("/student","StudentController");
 Route::resource("/staff","StaffController");
 Route::resource("/book","BookController");
 Route::resource("/room","RoomController");
+Route::resource("/classes","ClassController");
+
+Route::group(['prefix' => 'obj'], function () {
+    Route::get('/classes','ClassController@objAll');
+    Route::get('/class_object','ClassController@getRegisterData');
+});
