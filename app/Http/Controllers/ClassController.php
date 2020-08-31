@@ -109,9 +109,41 @@ class ClassController extends Controller
      * @param  \App\Classes  $classes
      * @return \Illuminate\Http\Response
      */
-    public function show(Classes $classes)
+    public function show($id)
     {
-        //
+        try
+        {
+            $study_time_array = array(
+                ["value"=>1,"name" =>"Morning | 7:30-10:30"],
+                ["value"=>2,"name" =>"Afternoon | 1:30-4:30"],
+                ["value"=>3,"name" =>"Evening 5:30 | 6:30"]
+            );
+            $class = Classes::findOrFail($id);
+            $teacher  = Staff::findOrFail($class->staff_id);
+            $room  = Room::findOrFail($class->room_id);
+            $book = Book::findOrFail($class->book_id);
+            
+            $r["value"] = $room['id'];
+            $r["name"] = $room['name'];
+            $t["value"] = $teacher['id'];
+            $t["name"] = $teacher['name'];
+            $b["value"] = $book['id'];
+            $b["name"] = $book['name'];
+            
+        }
+        catch(ModelNotFoundException $e)
+        {
+            return response()->json(['status' => 'failed', 'data' => null, 'message' => "Class with id $id is not found "]);
+        }
+        return response()->json(["data"=>[
+        'id'=>$id,
+        'teacher'=>$t,
+        'room'=>$r,
+        'book'=>$b,
+        'start_date'=>$class->start_date,
+        'time'=>$study_time_array[intval($class->study_time)-1],
+        'end_date'=>$class->end_date
+        ],"status"=>"ok"], 200);
     }
 
     /**
@@ -132,9 +164,36 @@ class ClassController extends Controller
      * @param  \App\Classes  $classes
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Classes $classes)
+    public function update(Request $request, $id)
     {
-        //
+        try
+        {
+            $class = Classes::findOrFail($id);
+        }
+        catch(ModelNotFoundException $e)
+        {
+            return response()->json(['status' => 'failed', 'data' => null, 'message' => "Class with id $id is not found "]);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'staff_id' => 'required|Integer',
+            'book_id' => 'required|Integer',
+            'room_id' => 'required|Integer',
+            'study_time' => 'required|',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date',
+        ]);
+        if ($validator->passes()) {
+            foreach($request->all() AS $index => $field){
+                $class->$index = $field;
+            }
+            $is_save = $class->save();
+            if($is_save){
+                return response()->json(['status'=>'ok','data'=>Classes::findOrFail($id),'success'=>'true','message'=>"Class with id $id has been updated"]);
+            }
+        }
+
+        return response()->json(['errors'=>$validator->errors(),'success'=>'false',"status"=>"failed"]);
     }
 
     /**
