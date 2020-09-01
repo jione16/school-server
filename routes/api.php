@@ -27,4 +27,6 @@ Route::resource("/classes","ClassController");
 Route::group(['prefix' => 'obj'], function () {
     Route::get('/classes','ClassController@objAll');
     Route::get('/class_object','ClassController@getRegisterData');
+    Route::get('/students','StudentController@getAllStudents');
+    Route::get('/studies/{student_id}','StudyController@getStudies');
 });

@@ -14,6 +14,18 @@ class StudentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function getAllStudents(){
+        $students = Student::all();
+        $students_array = array();
+        foreach ($students as $student){
+            $s["value"] = $student['id'];
+            $s["name"] = $student['name'];
+            array_push($students_array,$s);
+        }
+        return response()->json(["students"=>$students_array,"success"=>true]);
+    }
+
+
     public function index()
     {
         return Student::paginate(5);
