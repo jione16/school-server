@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Study;
+use App\Student;
+use App\Http\Resources\StudiesObject;
 class StudyController extends Controller
 {
     /**
@@ -14,8 +16,17 @@ class StudyController extends Controller
 
     public function getStudies($student_id){
 
+        try
+        {
+            $student = Student::findOrFail($student_id);
+        }
+        catch(ModelNotFoundException $e)
+        {
+            return response()->json(['status' => 'failed', 'data' => null, 'message' => "Student record with id $id is not found "]);
+        }
         $studies = Study::where('student_id',$student_id)->get();
-        return response()->json(["error"=>"false","status"=>"ok","data"=>$studies]);
+        
+        return response()->json(["error"=>false,"status"=>"ok","student"=>["id"=>$student->id],"studies"=>StudiesObject::collection($studies)]);
     }
     public function index()
     {
