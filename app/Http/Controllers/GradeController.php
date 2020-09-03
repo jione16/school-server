@@ -98,7 +98,15 @@ class GradeController extends Controller
      */
     public function edit($id)
     {
-        //
+        try
+        {
+            $grade = Grade::findOrFail($id);
+        }
+        catch(ModelNotFoundException $e)
+        {
+            return response()->json(['status' => 'failed', 'data' => null, 'message' => "grade with id $id is not found "]);
+        }
+        return response()->json(["data"=>$grade,"status"=>"ok"], 200);
     }
 
     /**
@@ -110,7 +118,39 @@ class GradeController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        try
+        {
+            $grade = Grade::findOrFail($id);
+        }
+        catch(ModelNotFoundException $e)
+        {
+            return response()->json(['status' => 'failed', 'data' => null, 'message' => "grade with id $id is not found "]);
+        }
+
+
+        $validator = Validator::make($request->all(), [
+            'study_id' => 'required|Numeric',
+            'exam_date'=>'required|date',
+            'quiz_score' => 'required|Numeric|min:0|max:20',
+            'exam_score' => 'required|Numeric|min:0|max:50',
+            'homework_score'=>'required|Numeric|min:0|max:20',
+            'attendent_score' => 'required|Numeric|min:0|max:10'
+
+        ]);
+
+        if ($validator->passes()) {
+            foreach($request->all() AS $index => $field){
+                $grade->$index = $field;
+            }
+            $grade->total_score = $request->quiz_score + $request->exam_score + $request->homework_score + $request->attendent_score;
+            $is_save = $grade->save();
+            if($is_save){
+                return response()->json(['status'=>'ok','data'=>Grade::findOrFail($id),'success'=>'true','message'=>"grade with id $id has been updated"]);
+            }
+        }
+
+
+        return response()->json(['errors'=>$validator->errors(),'success'=>'false',"status"=>"failed"]);
     }
 
     /**
