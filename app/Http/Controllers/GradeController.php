@@ -36,14 +36,14 @@ class GradeController extends Controller
     {
         try
         {
-            $grade = Grade::where('sub_study_id', '=',$request->sub_study_id)->firstOrFail();
+            $grade = Grade::where('study_id', '=',$request->study_id)->firstOrFail();
             return
             self::update($request,$grade->id);
        }
        catch(ModelNotFoundException $e)
        {
            $validator = Validator::make($request->all(), [
-               'sub_study_id' => 'required|Numeric',
+               'study_id' => 'required|Numeric',
                'exam_date'=>'required|date',
                'quiz_score' => 'required|Numeric|min:0|max:20',
                'exam_score' => 'required|Numeric|min:0|max:50',
@@ -55,7 +55,7 @@ class GradeController extends Controller
 
            if ($validator->passes()) {
                $grade = new Grade;
-               $grade->sub_study_id = $request->sub_study_id;
+               $grade->study_id = $request->study_id;
                $grade->exam_date = $request->exam_date;
                $grade->quiz_score = $request->quiz_score;
                $grade->exam_score = $request->exam_score;

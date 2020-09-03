@@ -32,3 +32,8 @@ Route::group(['prefix' => 'obj'], function () {
     Route::get('/studies/{student_id}','StudyController@getStudies');
     Route::get('/classes/joinable/{student_id}','ClassController@getJoinableClasses');
 });
+
+
+Route::group(['prefix' => 'feature'], function () {
+    Route::get('/new_students_each_month','FeatureController@newStudentsEachMonth');
+});

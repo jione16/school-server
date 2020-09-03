@@ -15,7 +15,7 @@ class CreateGradesTable extends Migration
     {
         Schema::create('grades', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('sub_study_id');
+            $table->integer('study_id');
             $table->dateTime('exam_date');
             $table->float('quiz_score');
             $table->float('exam_score');

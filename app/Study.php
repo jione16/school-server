@@ -15,4 +15,7 @@ class Study extends Model
     {
         return $this->hasOne('App\Classes','id','class_id');
     }
+    public function grade(){
+        return $this->hasMany('App\Grade','study_id','id');
+    }
 }
