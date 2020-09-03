@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Study;
 use App\Student;
 use App\Http\Resources\StudiesObject;
+use App\Http\Resources\Studies as StudiesResource;
+use App\Classes;
+
 class StudyController extends Controller
 {
     /**
@@ -25,7 +28,7 @@ class StudyController extends Controller
             return response()->json(['status' => 'failed', 'data' => null, 'message' => "Student record with id $id is not found "]);
         }
         $studies = Study::where('student_id',$student_id)->get();
-        
+
         return response()->json(["error"=>false,"status"=>"ok","student"=>["id"=>$student->id],"studies"=>StudiesObject::collection($studies)]);
     }
     public function index()
@@ -51,7 +54,53 @@ class StudyController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $student_id = $request->student_id;
+        $class_id = $request->class_id;
+        $now = date('Y-m-d');
+        //get student's studies
+        $studies = Study::where('student_id',$student_id)->get();
+        //register class
+        try
+        {
+            $registerClass = Classes::findOrFail($class_id);
+            if($registerClass->end_date<= $now){
+                return response()->json(['err'=>true,'message'=>'Invalid period time','class'=>$registerClass]);
+            }
+        }
+        catch(ModelNotFoundException $e)
+        {
+            return response()->json(['err'=>true,'status' => 'failed', 'data' => null, 'message' => "Class with id $id is not found "]);
+        }
+        //get class object
+        $studiesObject = StudiesResource::collection($studies);
+        //active class array
+        $activeClassArr = array();
+        foreach($studiesObject as $study){
+            // if($study->class->start_date <= $now && $study->class->end_date >= $now){
+            if($study->class->end_date >= $now){
+                array_push($activeClassArr,$study->class);
+            }
+        }
+
+        //validation
+        foreach($activeClassArr as $activeClass){
+            if($activeClass->study_time==$registerClass->study_time){
+                if($registerClass->start_date <= $activeClass->end_date){
+                    return response()->json(['err'=>true,'message'=>'Time duplicate','reg_class'=>$registerClass,'dup_class'=>$activeClass]);
+                }
+            }
+        }
+
+        $study = new Study;
+        $study->student_id = $student_id;
+        $study->class_id = $class_id;
+        $isSave = $study->save();
+
+        if($isSave){
+            return response()->json(['message'=>'success','err'=>false,'activeClass'=>$activeClassArr]);
+        }else{
+            return response()->json(['message'=>'something went wrong','err'=>true]);
+        }
     }
 
     /**
@@ -96,6 +145,17 @@ class StudyController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try
+        {
+            $study = Study::findOrFail($id);
+        }
+        catch(ModelNotFoundException $e)
+        {
+            return response()->json(['status' => 'failed', 'data' => null, 'message' => "Study with id $id is not found "]);
+        }
+        $isDelete = $study->delete();
+        if($isDelete){
+           return response()->json(['status'=>'ok','message'=>$isDelete], 200);
+        }
     }
 }

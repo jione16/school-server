@@ -23,10 +23,12 @@ Route::resource("/staff","StaffController");
 Route::resource("/book","BookController");
 Route::resource("/room","RoomController");
 Route::resource("/classes","ClassController");
+Route::resource('/studies', 'StudyController');
 
 Route::group(['prefix' => 'obj'], function () {
     Route::get('/classes','ClassController@objAll');
     Route::get('/class_object','ClassController@getRegisterData');
     Route::get('/students','StudentController@getAllStudents');
     Route::get('/studies/{student_id}','StudyController@getStudies');
+    Route::get('/classes/joinable/{student_id}','ClassController@getJoinableClasses');
 });

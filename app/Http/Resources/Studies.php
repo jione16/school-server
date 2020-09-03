@@ -3,7 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-
+use App\Http\Resources\Classes as ClassResource;
 class Studies extends JsonResource
 {
     /**
@@ -14,6 +14,9 @@ class Studies extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'class'=> new ClassResource($this->class),
+        ];
     }
 }

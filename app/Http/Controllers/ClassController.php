@@ -6,8 +6,10 @@ use App\Classes;
 use App\Room;
 use App\Staff;
 use App\Book;
+use App\Study;
 use App\Http\Resources\Classes as classResource;
 use App\Http\Resources\ClassesObject as classResourceObject;
+use App\Http\Resources\Studies as StudiesResource;
 use Illuminate\Http\Request;
 use Validator;
 class ClassController extends Controller
@@ -17,6 +19,24 @@ class ClassController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function getJoinableClasses($student_id){
+        $now = date('Y-m-d');
+        //get student's study program
+        $studies = Study::where('student_id',$student_id)->get();
+        //get class object
+        $studiesObject = StudiesResource::collection($studies);
+        //active class array
+        $activeClass = array();
+        foreach($studiesObject as $study){
+            array_push($activeClass,$study->class->id);
+        }
+        $availableClass = Classes::whereDate('start_date','>=',$now)->whereNotIn('id',$activeClass)->paginate(1);
+        $response =  classResourceObject::collection($availableClass);
+        return $response;
+        // return response()->json(["error"=>false,"data"=>classResourceObject::collection($availableClass)], 200);
+    }
+
+
     public function objAll(){
         $classes = Classes::paginate(5);
         return classResourceObject::collection($classes);
@@ -122,14 +142,14 @@ class ClassController extends Controller
             $teacher  = Staff::findOrFail($class->staff_id);
             $room  = Room::findOrFail($class->room_id);
             $book = Book::findOrFail($class->book_id);
-            
+
             $r["value"] = $room['id'];
             $r["name"] = $room['name'];
             $t["value"] = $teacher['id'];
             $t["name"] = $teacher['name'];
             $b["value"] = $book['id'];
             $b["name"] = $book['name'];
-            
+
         }
         catch(ModelNotFoundException $e)
         {
