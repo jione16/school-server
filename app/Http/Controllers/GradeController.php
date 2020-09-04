@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Validator;
 use Illuminate\Http\Request;
+use App\Grade;
 
 class GradeController extends Controller
 {
@@ -44,7 +47,7 @@ class GradeController extends Controller
        {
            $validator = Validator::make($request->all(), [
                'study_id' => 'required|Numeric',
-               'exam_date'=>'required|date',
+            //    'exam_date'=>'required|date',
                'quiz_score' => 'required|Numeric|min:0|max:20',
                'exam_score' => 'required|Numeric|min:0|max:50',
                'homework_score'=>'required|Numeric|min:0|max:20',
@@ -56,7 +59,8 @@ class GradeController extends Controller
            if ($validator->passes()) {
                $grade = new Grade;
                $grade->study_id = $request->study_id;
-               $grade->exam_date = $request->exam_date;
+            //    $grade->exam_date = $request->exam_date;
+               $grade->exam_date = $now = date('Y-m-d');;
                $grade->quiz_score = $request->quiz_score;
                $grade->exam_score = $request->exam_score;
                $grade->homework_score = $request->homework_score;
@@ -130,7 +134,7 @@ class GradeController extends Controller
 
         $validator = Validator::make($request->all(), [
             'study_id' => 'required|Numeric',
-            'exam_date'=>'required|date',
+            // 'exam_date'=>'required|date',
             'quiz_score' => 'required|Numeric|min:0|max:20',
             'exam_score' => 'required|Numeric|min:0|max:50',
             'homework_score'=>'required|Numeric|min:0|max:20',

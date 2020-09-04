@@ -30,7 +30,7 @@ class ClassController extends Controller
         foreach($studiesObject as $study){
             array_push($activeClass,$study->class->id);
         }
-        $availableClass = Classes::whereDate('start_date','>=',$now)->whereNotIn('id',$activeClass)->paginate(1);
+        $availableClass = Classes::whereDate('start_date','>=',$now)->whereNotIn('id',$activeClass)->paginate(5);
         $response =  classResourceObject::collection($availableClass);
         return $response;
         // return response()->json(["error"=>false,"data"=>classResourceObject::collection($availableClass)], 200);

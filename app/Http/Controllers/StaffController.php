@@ -12,6 +12,19 @@ class StaffController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function getAllTeachers(){
+        $teachers = Staff::all();
+        $teachers_array = array();
+        foreach ($teachers as $teacher){
+            $t["value"] = $teacher['id'];
+            $t["name"] = $teacher['name'];
+            array_push($teachers_array,$t);
+        }
+        return response()->json(["teachers"=>$teachers_array,"success"=>true]);
+    }
+
+
+
     public function index()
     {
         return Staff::paginate(5);

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use DateTime;
 use DB;
+use App\Classes;
+use App\Http\Resources\ClassesObject;
 class FeatureController extends Controller
 {
     public function newStudentsEachMonth(){
@@ -19,4 +21,12 @@ class FeatureController extends Controller
         return response()->json($records, 200);
 
     }
+
+
+    public function getMyClasses($teacher_id){
+        
+        $classes = Classes::where('staff_id',$teacher_id)->paginate(5);
+        return ClassesObject::collection($classes);
+    }
+
 }

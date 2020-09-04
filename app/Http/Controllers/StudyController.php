@@ -8,6 +8,7 @@ use App\Student;
 use App\Http\Resources\StudiesObject;
 use App\Http\Resources\Studies as StudiesResource;
 use App\Classes;
+use  App\Http\Resources\StudiesGradeResource;
 
 class StudyController extends Controller
 {
@@ -17,6 +18,10 @@ class StudyController extends Controller
      * @return \Illuminate\Http\Response
      */
 
+    public function getStudiesByClass($class_id){
+        $studies = Study::where('class_id',$class_id)->paginate(5);
+        return StudiesGradeResource::collection($studies);
+    }
     public function getStudies($student_id){
 
         try
@@ -52,6 +57,9 @@ class StudyController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+
+
+    
     public function store(Request $request)
     {
         $student_id = $request->student_id;
