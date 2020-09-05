@@ -14,16 +14,19 @@ return [
     | To learn more: https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
     |
     */
-
-    'paths' => ['api/*',
+    
+    'paths' => [
+        'api/*',
         'login',
-        'logout'],
+        'register',
+        'logout',
+        'sanctum/*'],
 
     'allowed_methods' => ['*'],
 
     'allowed_origins' => ['*'],
 
-    'allowed_origins_patterns' => [],
+    // 'allowed_origins_patterns' => [],
 
     'allowed_headers' => ['*'],
 

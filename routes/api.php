@@ -25,6 +25,7 @@ Route::resource("/room","RoomController");
 Route::resource("/classes","ClassController");
 Route::resource('/studies', 'StudyController');
 Route::resource('/grades','GradeController');
+Route::resource('/payment','PaymentController');
 
 Route::group(['prefix' => 'obj'], function () {
     Route::get('/studies_grade/{class_id}','StudyController@getStudiesByClass');
