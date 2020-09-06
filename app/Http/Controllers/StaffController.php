@@ -29,7 +29,10 @@ class StaffController extends Controller
     {
         return Staff::paginate(5);
     }
-
+    public function search(Request $request){
+        $staffs = Staff::where('name','like','%'.$request->query('name').'%')->paginate(5)->appends(request()->query());
+        return $staffs; 
+    }
     /**
      * Show the form for creating a new resource.
      *

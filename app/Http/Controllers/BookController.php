@@ -17,6 +17,10 @@ class BookController extends Controller
         return Book::paginate(5);
     }
 
+    public function search(Request $request){
+        return Book::where('name','like','%'.$request->query('name').'%')->paginate(5)->appends(request()->query());
+        
+    }
     /**
      * Show the form for creating a new resource.
      *

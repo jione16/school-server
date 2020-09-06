@@ -18,6 +18,11 @@ class RoomController extends Controller
       return  Room::paginate(5);
     }
 
+    public function search(Request $request){
+        return Room::where('name','like','%'.$request->query('name').'%')->paginate(5)->appends(request()->query());
+        
+    }
+
     /**
      * Show the form for creating a new resource.
      *

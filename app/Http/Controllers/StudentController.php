@@ -30,6 +30,10 @@ class StudentController extends Controller
     {
         return Student::paginate(5);
     }
+    public function search(Request $request){
+        $students = Student::where('name','like','%'.$request->query('name').'%')->paginate(5)->appends(request()->query());
+        return $students; 
+    }
 
     /**
      * Show the form for creating a new resource.

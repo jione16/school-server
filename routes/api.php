@@ -17,7 +17,10 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
-
+Route::get('/student_search','StudentController@search');
+Route::get('/staff_search','StaffController@search');
+Route::get('/book_search','BookController@search');
+Route::get('/room_search','RoomController@search');
 Route::resource("/student","StudentController");
 Route::resource("/staff","StaffController");
 Route::resource("/book","BookController");
