@@ -7,8 +7,9 @@ use App\Study;
 use App\Student;
 use App\Http\Resources\StudiesObject;
 use App\Http\Resources\Studies as StudiesResource;
+use App\Http\Resources\StudiesPayment2;
 use App\Classes;
-use  App\Http\Resources\StudiesGradeResource;
+use App\Http\Resources\StudiesGradeResource;
 
 class StudyController extends Controller
 {
@@ -35,6 +36,20 @@ class StudyController extends Controller
         $studies = Study::where('student_id',$student_id)->get();
 
         return response()->json(["error"=>false,"status"=>"ok","student"=>["id"=>$student->id],"studies"=>StudiesObject::collection($studies)]);
+    }
+    public function getStudiesPayments($student_id){
+
+        try
+        {
+            $student = Student::findOrFail($student_id);
+        }
+        catch(ModelNotFoundException $e)
+        {
+            return response()->json(['status' => 'failed', 'data' => null, 'message' => "Student record with id $id is not found "]);
+        }
+        $studies = Study::where('student_id',$student_id)->get();
+
+        return response()->json(["error"=>false,"status"=>"ok","student"=>["id"=>$student->id],"studies"=>StudiesPayment2::collection($studies)]);
     }
     public function index()
     {
@@ -119,7 +134,9 @@ class StudyController extends Controller
      */
     public function show($id)
     {
-        //
+        $study = Study::findOrFail($id);
+        
+        return new StudiesPayment2($study);
     }
 
     /**

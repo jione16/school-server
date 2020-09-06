@@ -18,4 +18,8 @@ class Study extends Model
     public function grade(){
         return $this->hasMany('App\Grade','study_id','id');
     }
+    public function payment()
+    {
+        return $this->hasMany('App\Payment','study_id','id');
+    }
 }

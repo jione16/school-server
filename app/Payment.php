@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Payment extends Model
 {
-    public function sub_study()
+    public function study()
     {
         return $this->hasOne('App\Study','id','study_id');
     }

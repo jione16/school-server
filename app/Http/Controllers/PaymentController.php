@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Payment;
 use Illuminate\Http\Request;
+use App\Http\Resources\Payment as PaymentResource;
 use Validator;
 class PaymentController extends Controller
 {
@@ -14,7 +15,8 @@ class PaymentController extends Controller
      */
     public function index()
     {
-        return  Payment::paginate(5);
+        $payments = Payment::paginate(5);
+        return PaymentResource::collection($payments);
     }
 
     /**
@@ -39,7 +41,7 @@ class PaymentController extends Controller
             'study_id' => 'required|Integer',
             'amount' => 'required|numeric',
             'month_pay' => 'required|numeric',
-            'staff_id' => 'required|Integer',
+            'staff_id' => 'Integer',
         ]);
 
 
@@ -98,8 +100,19 @@ class PaymentController extends Controller
      * @param  \App\Payment  $payment
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Payment $payment)
+    public function destroy($id)
     {
-        //
+        try
+         {
+             $payment = Payment::findOrFail($id);
+         }
+         catch(ModelNotFoundException $e)
+         {
+             return response()->json(['status' => 'failed', 'data' => null, 'message' => "Payment with id $id is not found"]);
+         }
+         $isDelete = $payment->delete();
+         if($isDelete){
+            return response()->json(['status'=>'ok','message'=>$isDelete], 200);
+         }
     }
 }

@@ -20,4 +20,8 @@ class Classes extends Model
     {
         return $this->hasOne('App\Room','id','room_id');
     }
+    public function studies()
+    {
+        return $this->hasMany('App\Study','class_id','id');
+    }
 }

@@ -28,17 +28,21 @@ Route::resource('/grades','GradeController');
 Route::resource('/payment','PaymentController');
 
 Route::group(['prefix' => 'obj'], function () {
+    
     Route::get('/studies_grade/{class_id}','StudyController@getStudiesByClass');
     Route::get('/classes','ClassController@objAll');
     Route::get('/class_object','ClassController@getRegisterData');
     Route::get('/students','StudentController@getAllStudents');
     Route::get('/teachers','StaffController@getAllTeachers');
     Route::get('/studies/{student_id}','StudyController@getStudies');
+    Route::get('/studies_payment/{student_id}','StudyController@getStudiesPayments');
     Route::get('/classes/joinable/{student_id}','ClassController@getJoinableClasses');
 });
 
 
 Route::group(['prefix' => 'feature'], function () {
+    Route::get('/get_stat','FeatureController@getStatEachMonth');
     Route::get('/new_students_each_month','FeatureController@newStudentsEachMonth');
     Route::get('/classes/{teacher_id}','FeatureController@getMyClasses');
+    Route::get('/get_dashboard_count','FeatureController@getDashboardCount');
 });
