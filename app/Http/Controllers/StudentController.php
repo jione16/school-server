@@ -6,6 +6,9 @@ use App\Student;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Validator;
+use App\Study;
+use App\Payment;
+use DB;
 
 class StudentController extends Controller
 {
@@ -181,6 +184,11 @@ class StudentController extends Controller
         }
         $isDelete = $student->delete();
         if ($isDelete) {
+            $studies = Study::where('student_id',$id);
+            foreach ($studies as $study) {
+                DB::table('payments')->where('study_id', $study['id'])->delete();
+            }
+            DB::table('studies')->where('student_id', $id)->delete();
             return response()->json(['status' => 'ok', 'message' => $isDelete], 200);
         }
     }
