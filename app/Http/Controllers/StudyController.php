@@ -74,7 +74,7 @@ class StudyController extends Controller
      */
 
 
-    
+
     public function store(Request $request)
     {
         $student_id = $request->student_id;
@@ -135,7 +135,7 @@ class StudyController extends Controller
     public function show($id)
     {
         $study = Study::findOrFail($id);
-        
+
         return new StudiesPayment2($study);
     }
 
