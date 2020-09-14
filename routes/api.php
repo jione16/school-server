@@ -42,6 +42,10 @@ Route::group(['prefix' => 'obj'], function () {
     Route::get('/classes/joinable/{student_id}','ClassController@getJoinableClasses');
 });
 
+Route::group(['prefix'=>'report'],function(){
+    Route::get('grades/{class_id}','ReportController@grades');
+});
+
 
 Route::group(['prefix' => 'feature'], function () {
     Route::get('/get_stat','FeatureController@getStatEachMonth');
