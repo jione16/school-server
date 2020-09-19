@@ -17,6 +17,7 @@ class StudiesPayment2 extends JsonResource
     {
         return [
             'id' => $this->id,
+            'student'=>$this->student,
             'class'=> new ClassResource($this->class),
             'payment'=>SimplePayment::collection($this->payment)
         ];

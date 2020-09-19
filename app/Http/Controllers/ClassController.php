@@ -104,6 +104,7 @@ class ClassController extends Controller
             'study_time' => 'required|',
             'start_date' => 'required|date',
             'end_date' => 'required|date',
+            'price'=> 'required|Integer'
         ]);
 
 
@@ -115,6 +116,7 @@ class ClassController extends Controller
             $classes->study_time = $request->study_time;
             $classes->start_date = $request->start_date;
             $classes->end_date = $request->end_date;
+            $classes->price = $request->price;
             $classes->save();
             return response()->json(["error"=>"false","status"=>"ok","data"=>$classes]);
         }
@@ -162,7 +164,8 @@ class ClassController extends Controller
         'book'=>$b,
         'start_date'=>$class->start_date,
         'time'=>$study_time_array[intval($class->study_time)-1],
-        'end_date'=>$class->end_date
+        'end_date'=>$class->end_date,
+        'price'=>$class->price,
         ],"status"=>"ok"], 200);
     }
 

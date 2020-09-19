@@ -21,7 +21,8 @@ class Classes extends JsonResource
             'room_id'=>$this->room_id,
             'study_time' => $this->study_time,
             'start_date'=> $this->start_date,
-            'end_date'=>$this->end_date
+            'end_date'=>$this->end_date,
+            'price'=>$this->price
         ];
     }
 

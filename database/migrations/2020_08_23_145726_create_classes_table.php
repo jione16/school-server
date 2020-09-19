@@ -21,6 +21,7 @@ class CreateClassesTable extends Migration
             $table->char('study_time');
             $table->date('start_date');
             $table->date('end_date');
+            $table->float('price');
             $table->dateTime('created_at');
             $table->dateTime('updated_at');
         });

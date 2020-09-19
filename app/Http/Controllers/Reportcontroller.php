@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Book;
 use App\Study;
+use App\Payment;
 use PdfReport;
 use DB;
 use App\Classes;
 use Exception;
+use Carbon\Carbon;
 class Reportcontroller extends Controller
 {
     //
@@ -18,28 +20,45 @@ class Reportcontroller extends Controller
         return response()->json(['data' => $books->get()]);
     }
 
-    public function report(Request $request)
-    {
-        $title = 'Final Result'; // Report title
 
-        $meta = [ // For displaying filters description on header
-            'Registered on' => 'wehh?',
-            'Sort By' => 'hahh?'
-        ];
 
-        $queryBuilder = Book::select(['language', 'name']);
 
-        $columns = [ // Set Column to be displayed
-            'Name' => 'name',
-            'Registered At', // if no column_name specified, this will automatically seach for snake_case of column name (will be registered_at) column from query result
-            'Language' => 'language'
-        ];
+    public function payment($payment_id){
+            $title = 'Payment detail'; // Report title
 
-        // Generate Report with flexibility to manipulate column class even manipulate column value (using Carbon, etc).
-        return PdfReport::of($title, $meta, $queryBuilder, $columns)
-            ->limit(20) // Limit record to be showed
-            ->stream(); // other available method: download('filename') to download pdf / make() that will producing DomPDF / SnappyPdf instance so you could do any other DomPDF / snappyPdf method such as stream() or download()
+            $payment = Payment::findOrFail($payment_id);
+            $queryBuilder = Payment::where('id',$payment_id);
+            $meta = [ // For displaying filters description on header
+                'No.' => $payment->id,
+                'Student name' => $payment->study->student->name,
+                'receiver' => $payment->study->Class->staff->name,
+                'Book' => $payment->study->Class->book->name,
+            ];
+            // $queryBuilder = Study::where('class_id', $class_id);
+            $columns = [ // Set Column to be displayed
+                'Amount' =>'amount',
+                "Month paid" => 'month_pay',
+                'Date' => function($payment){
+                    return Carbon::parse($payment->date);
+                    return $payment->date;
+                }
+            ];
+
+            return PdfReport::of($title, $meta, $queryBuilder, $columns)
+                ->editColumns(['Amount'], [ // Mass edit column
+                    'class' => '_text'
+                ])
+                ->setCss([
+                    '._text' => 'font-size:18px;padding:6px',
+                    '.italic-red' => 'color: red;font-style: italic;'
+                ])
+                ->showTotal([ // Used to sum all value on specified column on the last table (except using groupBy method). 'point' is a type for displaying total with a thousand separator
+                    'Amount' => '$' // if you want to show dollar sign ($) then use 'Total Balance' => '$'
+                ])
+                ->limit(1)
+                ->stream();
     }
+
 
     public function grades($class_id)
     {
@@ -54,7 +73,7 @@ class Reportcontroller extends Controller
             $class = Classes::find($class_id);
             //return response()->json(['d'=>$class]);
             $meta = [ // For displaying filters description on header
-                'Info' => ' Teacher '.$class->staff->name.' - Book: '.$class->book->name,
+                'Class infomation' => ' Teacher: '.$class->staff->name.' - Book: '.$class->book->name,
                 'Period' => 'Start: '.$class->start_date.' End: '.$class->end_date
             ];
             // $queryBuilder = Study::where('class_id', $class_id);

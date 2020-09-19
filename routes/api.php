@@ -44,8 +44,8 @@ Route::group(['prefix' => 'obj'], function () {
 
 Route::group(['prefix'=>'report'],function(){
     Route::get('grades/{class_id}','ReportController@grades');
+    Route::get('payments/{payment_id}','ReportController@payment');
 });
-
 
 Route::group(['prefix' => 'feature'], function () {
     Route::get('/get_stat','FeatureController@getStatEachMonth');
