@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Book;
+use App\Classes;
 use Illuminate\Http\Request;
 use Validator;
 class BookController extends Controller
@@ -141,6 +142,10 @@ class BookController extends Controller
         try
          {
              $book = Book::findOrFail($id);
+             $class_count = Classes::where('book_id',$id)->count();
+            if($class_count>0){
+                abort(404,"Please delete book's relate classes");
+            }
          }
          catch(ModelNotFoundException $e)
          {

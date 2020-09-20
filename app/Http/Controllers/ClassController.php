@@ -230,6 +230,10 @@ class ClassController extends Controller
         try
          {
              $class = Classes::findOrFail($id);
+             $study_count = Study::where('class_id',$id)->count();
+            if($study_count>0){
+                abort(404,'Please delete relate studies infomation');
+            }
          }
          catch(ModelNotFoundException $e)
          {

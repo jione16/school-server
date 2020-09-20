@@ -19,6 +19,7 @@ class Payment extends JsonResource
             'study' =>  new StudiesPayment($this->study),
             'amount'=> $this->amount,
             'month_pay'=>$this->month_pay,
+            'pay_for'=>$this->month_pay
         ];
     }
 }

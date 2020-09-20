@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Room;
+use App\Classes;
 use Illuminate\Http\Request;
 use Validator;
 
@@ -146,6 +147,10 @@ class RoomController extends Controller
         try
         {
             $room = Room::findOrFail($id);
+            $class_count = Classes::where('room_id',$id)->count();
+            if($class_count>0){
+                abort(404,"Please delete Room's relate classes");
+            }
         }
         catch(ModelNotFoundException $e)
         {

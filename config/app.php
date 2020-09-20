@@ -162,6 +162,7 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
         Jimmyjs\ReportGenerator\ServiceProvider::class,
+        Barryvdh\Snappy\ServiceProvider::class,
         /*
          * Package Service Providers...
          */

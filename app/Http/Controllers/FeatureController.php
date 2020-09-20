@@ -30,9 +30,9 @@ class FeatureController extends Controller
     }
 
 
-    public function getStatEachMonth(){
+    public function getStatEachMonth($year){
         $records = array("data"=>[],"status"=>"fails","chart_data"=>[]);
-        $year = date("Y");
+        // $year = date("Y");
         for($i=1;$i<=12;$i++){
             $month = str_pad($i, 2, "0", STR_PAD_LEFT);
             $month_name = DateTime::createFromFormat('!m',$i)->format('F');

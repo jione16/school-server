@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Staff;
+use App\Classes;
 use Illuminate\Http\Request;
 use Validator;
 class StaffController extends Controller
@@ -171,6 +172,10 @@ class StaffController extends Controller
         try
         {
             $staff = Staff::findOrFail($id);
+            $class_count = Classes::where('staff_id',$id)->count();
+            if($class_count>0){
+                abort(404,"Please delete staff's relate classes");
+            }
         }
         catch(ModelNotFoundException $e)
         {

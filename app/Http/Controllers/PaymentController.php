@@ -66,6 +66,12 @@ class PaymentController extends Controller
      * @param  \App\Payment  $payment
      * @return \Illuminate\Http\Response
      */
+
+    public function dailyReport($date){
+        $payments = Payment::whereDate('created_at', '=', $date);
+        return response()->json(["payments"=>PaymentResource::collection($payments->get()),"total"=>$payments->sum('amount')]);
+    }
+
     public function show(Payment $payment)
     {
         //

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Study;
 use App\Student;
+use App\Grade;
+use App\Payment;
 use App\Http\Resources\StudiesObject;
 use App\Http\Resources\Studies as StudiesResource;
 use App\Http\Resources\StudiesPayment2;
@@ -173,6 +175,14 @@ class StudyController extends Controller
         try
         {
             $study = Study::findOrFail($id);
+            $payment_count = Payment::where('study_id',$id)->count();
+            if($payment_count>0){
+                abort(404,'Please delete relate payment infomation');
+            }
+            // $grade_count = Grade::where('study_id',$id)->count();
+            // if($grade_count>0){
+            //     abort(404,'Please delete relate grade infomation');
+            // }
         }
         catch(ModelNotFoundException $e)
         {

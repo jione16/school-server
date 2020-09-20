@@ -179,16 +179,15 @@ class StudentController extends Controller
     {
         try {
             $student = Student::findOrFail($id);
+            $study_count = Study::where('student_id',$id)->count();
+            if($study_count>0){
+                abort(404,'Please delete studies infomation');
+            }
         } catch (ModelNotFoundException $e) {
             return response()->json(['status' => 'failed', 'data' => null, 'message' => "Student with id $id is not found "]);
         }
         $isDelete = $student->delete();
         if ($isDelete) {
-            $studies = Study::where('student_id',$id);
-            foreach ($studies as $study) {
-                DB::table('payments')->where('study_id', $study['id'])->delete();
-            }
-            DB::table('studies')->where('student_id', $id)->delete();
             return response()->json(['status' => 'ok', 'message' => $isDelete], 200);
         }
     }

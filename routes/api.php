@@ -29,6 +29,7 @@ Route::resource("/classes","ClassController");
 Route::resource('/studies', 'StudyController');
 Route::resource('/grades','GradeController');
 Route::resource('/payment','PaymentController');
+Route::get('/payment_report/daily/{dailyReport}','PaymentController@dailyReport');
 
 Route::group(['prefix' => 'obj'], function () {
 
@@ -45,10 +46,12 @@ Route::group(['prefix' => 'obj'], function () {
 Route::group(['prefix'=>'report'],function(){
     Route::get('grades/{class_id}','ReportController@grades');
     Route::get('payments/{payment_id}','ReportController@payment');
+    Route::get('statistic/{year}','ReportController@Statistic');
+    Route::get('/daily_report/{date}','ReportController@dailyReport');
 });
 
 Route::group(['prefix' => 'feature'], function () {
-    Route::get('/get_stat','FeatureController@getStatEachMonth');
+    Route::get('/get_stat/{year}','FeatureController@getStatEachMonth');
     Route::get('/new_students_each_month','FeatureController@newStudentsEachMonth');
     Route::get('/classes/{teacher_id}','FeatureController@getMyClasses');
     Route::get('/get_dashboard_count','FeatureController@getDashboardCount');

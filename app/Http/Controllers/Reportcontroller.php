@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App;
 use Illuminate\Http\Request;
 use App\Book;
 use App\Study;
@@ -11,6 +11,7 @@ use DB;
 use App\Classes;
 use Exception;
 use Carbon\Carbon;
+use DateTime;
 class Reportcontroller extends Controller
 {
     //
@@ -59,6 +60,40 @@ class Reportcontroller extends Controller
                 ->stream();
     }
 
+    public function dailyReport($date){
+        $title = 'Payment Daily Report '.$date; // Report title
+        $queryBuilder = Payment::whereDate('created_at', '=', $date);
+        
+        $columns = [ // Set Column to be displayed
+            'STUDENT NAME' => function($payment){
+                return $payment->study->student->name;
+            },
+            "BOOK" => function($payment){
+                return $payment->study->class->book->name;
+            },
+            'PAY FOR' => function($payment){
+                return $payment->month_pay;
+            },
+            'Amount' => function($payment){
+                return $payment->amount;
+            }
+        ];
+        $meta = [ // For displaying filters description on header
+           
+        ];
+         return PdfReport::of($title, $meta, $queryBuilder, $columns)
+                ->editColumns(['Amount','PAY FOR','BOOK','STUDENT NAME'], [ // Mass edit column
+                    'class' => '_text'
+                ])
+                ->setCss([
+                    '._text' => 'font-size:18px;padding:6px',
+                    '.italic-red' => 'color: red;font-style: italic;'
+                ])
+                ->showTotal([ // Used to sum all value on specified column on the last table (except using groupBy method). 'point' is a type for displaying total with a thousand separator
+                    'Amount' => '$' // if you want to show dollar sign ($) then use 'Total Balance' => '$'
+                ])
+                ->stream();
+    }
 
     public function grades($class_id)
     {
@@ -169,5 +204,31 @@ class Reportcontroller extends Controller
         } catch (Exception $e) {
             return response()->json(['error'=>'Class not found']);
         }
+    }
+
+
+    
+
+    public function Statistic($year){
+        $records = array("data"=>[],"status"=>"fails","chart_data"=>[]);
+        // $year = date("Y");
+        for($i=1;$i<=12;$i++){
+            $month = str_pad($i, 2, "0", STR_PAD_LEFT);
+            $month_name = DateTime::createFromFormat('!m',$i)->format('F');
+            $classes = Classes::latest()->whereDate("start_date",'<=',date("Y-m-t", strtotime("$year-$month-01")))->whereDate('end_date','>=',date("Y-m-t", strtotime("$year-$month-01")))->get();
+            $count = 0;
+            foreach ($classes as $class){
+                $studies_count = $class->studies()->count();
+                $count+=$studies_count;
+            }
+            $array = array("month"=>$month,"month_name"=>$month_name,"studies_count"=>$count);
+            array_push ($records['chart_data'],$count);
+            array_push($records['data'],$array);
+            
+        }
+        $pdf = App::make('snappy.pdf.wrapper');
+        // $pdf->loadHTML('<h1>Test</h1>');
+        $pdf->loadView('report.statistic',['data'=>$records,'year'=>$year]);
+        return $pdf->inline();
     }
 }
