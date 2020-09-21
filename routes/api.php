@@ -48,9 +48,11 @@ Route::group(['prefix'=>'report'],function(){
     Route::get('payments/{payment_id}','ReportController@payment');
     Route::get('statistic/{year}','ReportController@Statistic');
     Route::get('/daily_report/{date}','ReportController@dailyReport');
+    Route::get('/payment_statistic/{year}','ReportController@paymentStatistic');
 });
 
 Route::group(['prefix' => 'feature'], function () {
+    Route::get('/get_payment_stat/{year}','FeatureController@getPaymentStatEachMonth');
     Route::get('/get_stat/{year}','FeatureController@getStatEachMonth');
     Route::get('/new_students_each_month','FeatureController@newStudentsEachMonth');
     Route::get('/classes/{teacher_id}','FeatureController@getMyClasses');

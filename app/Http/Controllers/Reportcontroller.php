@@ -211,6 +211,7 @@ class Reportcontroller extends Controller
 
     public function Statistic($year){
         $records = array("data"=>[],"status"=>"fails","chart_data"=>[]);
+        $student_count = 0;
         // $year = date("Y");
         for($i=1;$i<=12;$i++){
             $month = str_pad($i, 2, "0", STR_PAD_LEFT);
@@ -224,11 +225,29 @@ class Reportcontroller extends Controller
             $array = array("month"=>$month,"month_name"=>$month_name,"studies_count"=>$count);
             array_push ($records['chart_data'],$count);
             array_push($records['data'],$array);
-            
+            $student_count+=$count;
         }
         $pdf = App::make('snappy.pdf.wrapper');
         // $pdf->loadHTML('<h1>Test</h1>');
-        $pdf->loadView('report.statistic',['data'=>$records,'year'=>$year]);
+        $pdf->loadView('report.statistic',['data'=>$records,'year'=>$year,"student_count"=>$student_count]);
+        return $pdf->inline();
+    }
+
+    public function paymentStatistic($year){
+        $records = array("data"=>[],"status"=>"fails","chart_data"=>[]);
+        // $year = date("Y");
+        for($i=1;$i<=12;$i++){
+            $month = str_pad($i, 2, "0", STR_PAD_LEFT);
+            $month_name = DateTime::createFromFormat('!m',$i)->format('F');
+            $payment_count = Payment::whereBetween("created_at",["$year-$month-01",date("Y-m-t", strtotime("$year-$month-01"))])->sum('amount');
+            $array = array("month"=>$month,"month_name"=>$month_name,"amount_sum"=>$payment_count);
+            array_push ($records['chart_data'],$payment_count);
+            array_push($records['data'],$array);
+        }
+        $total_sum = Payment::whereBetween("created_at",["$year-01-01",date("Y-m-t", strtotime("$year-12-01"))])->sum('amount');
+        $pdf = App::make('snappy.pdf.wrapper');
+        // $pdf->loadHTML('<h1>Test</h1>');
+        $pdf->loadView('report.paymentstatistic',['data'=>$records,'year'=>$year,"total_sum"=>$total_sum]);
         return $pdf->inline();
     }
 }

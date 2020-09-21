@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use DateTime;
 use DB;
 use App\Classes;
+use App\Payment;
 use App\Http\Resources\ClassesObject;
 class FeatureController extends Controller
 {
@@ -60,4 +61,20 @@ class FeatureController extends Controller
         return response()->json(["students_count"=>$students_count,"teachers_count"=>$teachers_count,"classes_count"=>$classes_count,"books_count"=>$books_count,"status"=>"ok"],200);
     }
 
+
+    public function getPaymentStatEachMonth($year){
+        $records = array("data"=>[],"status"=>"fails","chart_data"=>[]);
+        // $year = date("Y");
+        for($i=1;$i<=12;$i++){
+            $month = str_pad($i, 2, "0", STR_PAD_LEFT);
+            $month_name = DateTime::createFromFormat('!m',$i)->format('F');
+            $payment_count = Payment::whereBetween("created_at",["$year-$month-01",date("Y-m-t", strtotime("$year-$month-01"))])->sum('amount');
+            $array = array("month"=>$month,"month_name"=>$month_name,"amount_sum"=>$payment_count);
+            array_push ($records['chart_data'],$payment_count);
+            array_push($records['data'],$array);
+            
+        }
+        $records['status'] = "ok";
+        return response()->json($records, 200);
+    }
 }

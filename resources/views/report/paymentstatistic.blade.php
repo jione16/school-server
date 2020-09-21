@@ -22,12 +22,12 @@ td, th {
 </style>
 </head>
 <body>
-    <h1 class="text-center" style="text-align:center">Handprint School {{ $year }} Statistic</h1>
-    <p class="text-center" style="text-align:center">Total Students from January to December</p>
+    <h1 class="text-center" style="text-align:center">Handprint School {{ $year }} Earning</h1>
+    <p class="text-center" style="text-align:center">Total Earn from January to December</p>
     <table style="width:100%">
   <tr>
     <th>Month</th>
-    <th>Students</th>
+    <th>Amount</th>
   </tr>
   @foreach ($data["data"] as $rec)
   <tr>
@@ -35,12 +35,12 @@ td, th {
     {{ $rec['month_name']}}
     </td>
     <td>
-    {{ $rec['studies_count']}}
+    {{ $rec['amount_sum'].'$'}}
     </td>
   </tr>
 @endforeach
 <tr>
-<td colspan="2" style="text-align:right"><b>Total Students: {{$student_count}}</b></td>
+<td colspan="2" style="text-align:right"><b>Total: {{$total_sum.'$'}}</b></td>
 </tr>
 </table>
 <p style="text-align:right;margin-top:16px">
