@@ -20,5 +20,5 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/test2', function(){
-    return view('report.statistic');
+    return view('report.test');
 });
