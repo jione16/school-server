@@ -13,6 +13,7 @@ use Exception;
 use Carbon\Carbon;
 use DateTime;
 class Reportcontroller extends Controller
+
 {
     //
     public function test(Request $request)
@@ -63,7 +64,7 @@ class Reportcontroller extends Controller
     public function dailyReport($date){
         $title = 'Payment Daily Report '.$date; // Report title
         $queryBuilder = Payment::whereDate('created_at', '=', $date);
-        
+
         $columns = [ // Set Column to be displayed
             'STUDENT NAME' => function($payment){
                 return $payment->study->student->name;
@@ -79,7 +80,7 @@ class Reportcontroller extends Controller
             }
         ];
         $meta = [ // For displaying filters description on header
-           
+
         ];
          return PdfReport::of($title, $meta, $queryBuilder, $columns)
                 ->editColumns(['Amount','PAY FOR','BOOK','STUDENT NAME'], [ // Mass edit column
@@ -207,7 +208,7 @@ class Reportcontroller extends Controller
     }
 
 
-    
+
 
     public function Statistic($year){
         $records = array("data"=>[],"status"=>"fails","chart_data"=>[]);
