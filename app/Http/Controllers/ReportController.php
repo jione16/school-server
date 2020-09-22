@@ -230,6 +230,7 @@ class Reportcontroller extends Controller
         }
         $pdf = App::make('snappy.pdf.wrapper');
         // $pdf->loadHTML('<h1>Test</h1>');
+        $pdf->setOption('enable-local-file-access', true);
         $pdf->loadView('report.statistic',['data'=>$records,'year'=>$year,"student_count"=>$student_count]);
         return $pdf->inline();
     }
