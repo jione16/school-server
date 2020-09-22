@@ -20,8 +20,8 @@ class CreateStudiesTable extends Migration
             $table->boolean('is_active')->default(true);
             $table->dateTime('created_at');
             $table->dateTime('updated_at');
-            $table->foreign('student_id')->references('id')->on('students')->onDelete('cascade');
-            $table->foreign('class_id')->references('id')->on('classes')->onDelete('cascade');
+            // $table->foreign('student_id')->references('id')->on('students')->onDelete('cascade');
+            // $table->foreign('class_id')->references('id')->on('classes')->onDelete('cascade');
         });
     }
 
