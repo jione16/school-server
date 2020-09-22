@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Statistic</title>
-    <link rel="stylesheet" href="{{ asset('css\style.css') }}" media="all" />
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}" media="all" />
     <style>
 table {
   font-family: arial, sans-serif;
@@ -46,6 +46,6 @@ td, th {
 <p style="text-align:right;margin-top:16px">
 {{ date('Y-m-d H:i:s') }}
 </p>
-    
+
 </body>
 </html>
